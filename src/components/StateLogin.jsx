@@ -1,42 +1,44 @@
 import { useState } from "react";
+import Input from "./Input";
 
 export default function Login() {
+  const [enteredValues, setEnteredValues] = useState({
+    email: "",
+    password: "",
+  });
+  const [didEdit, setDidEdit] = useState({
+    email: false,
+    password: false,
+  });
 
-    const [enteredValues, setEnteredValues] = useState({
-        email: '',
-        password: ''
-    })
-    const [didEdit, setDidEdit] = useState({
-        email: false,
-        password: false
-    })
+  const emailIsInvalid = didEdit.email && !enteredValues.email.includes("@");
+  const passwordIsInvalid =
+    didEdit.password && enteredValues.password.trim().length < 6;
 
-    const emailIsInvalid = didEdit.email && !enteredValues.email.includes('@')
-
-   function handleSubmit(event) {
+  function handleSubmit(event) {
     event.preventDefault();
     console.log("Form is submitted!, enteredValues are: ", enteredValues);
   }
 
   function handleInputChange(identifier, value) {
-    console.log("changing values")
+    console.log("changing values");
     setEnteredValues((prevValue) => ({
-        ...prevValue,
-        [identifier]: value
-    }))
+      ...prevValue,
+      [identifier]: value,
+    }));
 
     setDidEdit((prevValue) => ({
-        ...prevValue,
-        [identifier]: false
-    }))
+      ...prevValue,
+      [identifier]: false,
+    }));
   }
 
   function handleLostFocus(identifier) {
-    console.log("Lost focus")
+    console.log("Lost focus");
     setDidEdit((prevValue) => ({
-        ...prevValue,
-        [identifier]: true
-    }))
+      ...prevValue,
+      [identifier]: true,
+    }));
   }
 
   return (
@@ -44,32 +46,28 @@ export default function Login() {
       <h2>Login</h2>
 
       <div className="control-row">
-        <div className="control no-margin">
-          <label htmlFor="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            name="email"
-            onBlur={() => handleLostFocus('email')}
-            onChange={(event) => handleInputChange('email', event.target.value)}
-            value={enteredValues.email}
-          />
-          <div className="control-error">
-            {emailIsInvalid && <p>Please enter a valid email address.</p>}
-          </div>
-        </div>
-
-        <div className="control no-margin">
-          <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            name="password"
-            onBlur={() => handleLostFocus('password')}
-            onChange={(event) => handleInputChange('password', event.target.value)}
-            value={enteredValues.password}
-          />
-        </div>
+        <Input
+          label="Email"
+          id="email"
+          type="email"
+          name="email"
+          onBlur={() => handleLostFocus("email")}
+          onChange={(event) => handleInputChange("email", event.target.value)}
+          value={enteredValues.email}
+          error={emailIsInvalid && <p>Please enter a valid email.</p>}
+        />
+        <Input
+          label="Password"
+          id="password"
+          type="password"
+          name="password"
+          onBlur={() => handleLostFocus("password")}
+          onChange={(event) =>
+            handleInputChange("password", event.target.value)
+          }
+          value={enteredValues.password}
+          error={passwordIsInvalid && <p>Please enter a valid password.</p>}
+        />
       </div>
 
       <p className="form-actions">
